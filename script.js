@@ -83,8 +83,10 @@ alienShooting = false;
 function draw() {
   background(20, 30, 40);
   drawShip();
+  if(shipShooting) {
+    drawBullet();
+  }
   drawAlien();
-  drawBullet();
   if(alienShooting) {
     drawAlienBullet();
   }
@@ -174,14 +176,15 @@ function drawAlien() {
  */
 function drawAlienBullet () {
   if(alienBulletY < height) {
+
+alienBulletY += 10; }
+else {
+   alienShooting = false;
+ }
     fill("#0f0ff0");
     noStroke();
     ellipse(alienBulletX, alienBulletY, alienBulletDiameter, alienBulletDiameter);
     alienBulletY += 11;
-  }
-  else {
-    alienShooting = false;
-  }
 }
 
 /*
