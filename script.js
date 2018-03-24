@@ -43,14 +43,14 @@ function setup() {
   canvas = createCanvas(500, 400);
   background(20, 30, 40);
   gameScreen = select("#game-screen");
-  canvas.parent(gameScreen);
+  canvas.parent("game-screen");
 shipColor = "#00ff00";
 shipDiameter = 80;
-shipX = width / 2;
-shipY = height - (shipDiameter / 2);
+shipX = width/2;
+shipY = height - (shipDiameter/2);
 shipSpeed = 6;
 bulletDiameter = 23;
-
+shipShooting = false;
 }
 
 /*
@@ -95,6 +95,7 @@ else if(keyIsDown(RIGHT_ARROW) && shipX < width - shipDiameter / 2) {
   ellipse(shipX, shipY, shipDiameter, shipDiameter);
 }
 
+
 /*
  * keyPressed()
  * This function runs automatically when the player presses the spacebar
@@ -104,9 +105,10 @@ else if(keyIsDown(RIGHT_ARROW) && shipX < width - shipDiameter / 2) {
  * bullet is currently being fired.
  */
 function keyPressed() {
-  if(keyCode === 32) {
+  if(keyCode === 32 && shipShooting === false) {
     bulletX = shipX;
     bulletY = shipY;
+   shipShooting = true;
 
   }
 }
@@ -119,8 +121,14 @@ function keyPressed() {
  * to hit) each time it is hit by a bullet.
  */
 function drawBullet() {
+  if(bulletY > 0) {
   fill("#ffff00");
   ellipse(bulletX, bulletY, bulletDiameter, bulletDiameter);
+  bulletY -= 10;
+  }
+  else{
+    shipShooting = false;
+  }
 }
 
 /*
