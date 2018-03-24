@@ -51,6 +51,13 @@ shipY = height - (shipDiameter/2);
 shipSpeed = 6;
 bulletDiameter = 23;
 shipShooting = false;
+alienDiameter = 40;
+alienX = alienDiameter/2;
+alienY = alienDiameter/2;
+alienVelocity = 10;
+alienBulletDiameter = 14;
+alienShooting = false;
+
 }
 
 /*
@@ -76,7 +83,11 @@ shipShooting = false;
 function draw() {
   background(20, 30, 40);
   drawShip();
+  drawAlien();
   drawBullet();
+  if(alienShooting) {
+    drawAlienBullet();
+  }
 }
 
 /*
@@ -121,12 +132,18 @@ function keyPressed() {
  * to hit) each time it is hit by a bullet.
  */
 function drawBullet() {
-  if(bulletY > 0) {
+  var hitAlien = checkCollision(alienX, alienY, alienDiameter, bulletX, bulletY, bulletDiameter);
+  if(bulletY > 0 && !hitAlien) {
   fill("#ffff00");
   ellipse(bulletX, bulletY, bulletDiameter, bulletDiameter);
   bulletY -= 10;
   }
-  else{
+  else if (hitAlien) {
+    resetAlien();
+    alienVelocity++;
+    shipShooting = false;
+  }
+  else {
     shipShooting = false;
   }
 }
@@ -136,14 +153,36 @@ function drawBullet() {
  * This function draws an alien. It also checks to see if the alien has touched
  * the player's ship. If it has, the function calls gameOver().
  */
-
+function drawAlien() {
+  alienX += alienVelocity;
+  if(alienX >= width - (alienDiameter / 2) || alienX <= alienDiameter / 2) {
+    alienVelocity *= -1;
+  }
+  fill("#ff0fff");
+  ellipse(alienX, alienY, alienDiameter, alienDiameter);
+  if(random(4) < 1 && !alienShooting) {
+    alienBulletY = alienY;
+    alienBulletX = alienX;
+    alienShooting = true;
+  }
+}
 
 /*
  * drawAlienBullet()
  * This function behaves much like drawBullet(), only it fires from the alien
  * and not the player's ship. If the bullet hits the player, it's game over.
  */
-
+function drawAlienBullet () {
+  if(alienBulletY < height) {
+    fill("#0f0ff0");
+    noStroke();
+    ellipse(alienBulletX, alienBulletY, alienBulletDiameter, alienBulletDiameter);
+    alienBulletY += 11;
+  }
+  else {
+    alienShooting = false;
+  }
+}
 
 /*
  * resetAlien()
@@ -152,7 +191,11 @@ function drawBullet() {
  * velocity was negative when it died, it becomes positive upon reset, making
  * it always start by moving to the right).
  */
-
+function resetAlien() {
+  alienX = alienDiameter / 2;
+  alienY = alienDiameter / 2;
+  alienVelocity = abs(alienVelocity);
+}
 
 /*
  * checkCollision(aX, aY, aD, bX, bY, bD)
@@ -162,3 +205,12 @@ function drawBullet() {
  * Circles are considered touching if
  * (distance <= (circle1Diameter + circle2Diameter) / 2)
  */
+function checkCollision(aX, aY, aD, bX, bY, bD) {
+  var distance = dist(aX, aY, bX, bY);
+  if(distance <= (aD + bD) / 2) {
+    return true;
+  }
+  else {
+    return false;
+  }
+}
