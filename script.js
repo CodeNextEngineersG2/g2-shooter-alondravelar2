@@ -44,7 +44,7 @@ function setup() {
   background(20, 30, 40);
   gameScreen = select("#game-screen");
   canvas.parent("game-screen");
-shipColor = "#00ff00";
+shipColor = "#0ff0ff";
 shipDiameter = 80;
 shipX = width/2;
 shipY = height - (shipDiameter/2);
